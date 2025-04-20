@@ -1,26 +1,157 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 220 20% 4%;
+    --foreground: 210 40% 98%;
+    --card: 220 20% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 20% 4%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 20% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 220 20% 12%;
+    --muted-foreground: 215 20.2% 85%;
+    --accent: 220 20% 12%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 20% 12%;
+    --input: 220 20% 12%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+}
+
+@layer components {
+  body {
+    @apply bg-background text-foreground antialiased min-h-screen;
+  }
+
+  h1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl dark:text-white;
+  }
+
+  h2 {
+    @apply scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0 dark:text-gray-100;
+  }
+
+  h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight dark:text-gray-100;
+  }
+
+  h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight dark:text-gray-100;
+  }
+
+  p {
+    @apply leading-7 [&:not(:first-child)]:mt-6 dark:text-gray-200;
+  }
+
+  .page-header {
+    @apply flex flex-col gap-4;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold tracking-tight dark:text-white;
+  }
+
+  .page-description {
+    @apply text-lg text-muted-foreground;
+  }
+
+  .card-grid {
+    @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  /* Background Element Styles */
+  
+  /* Custom Text Colors */
+  .text-content {
+    @apply text-[#1F2937] dark:text-[#E5E7EB]; /* Improved contrast in dark mode */
+  }
+  
+  .text-helper {
+    @apply text-[#6B7280] dark:text-[#9CA3AF]; /* Enhanced visibility in dark mode */
+  }
+  
+  /* Custom Button Colors */
+  .btn-primary {
+    @apply bg-[#2563EB] text-white hover:bg-[#2563EB]/90;
+  }
+  
+  /* Element Shadow */
+  .floating-element {
+    @apply shadow-[0_8px_16px_rgba(0,0,0,0.1)];
+  }
+}
+
+@layer utilities {
+  /* Polygon Pattern Background */
+  .polygon-pattern {
+    @apply relative;
+    background-color: rgba(var(--background));
+    background-image:
+      linear-gradient(120deg, rgba(var(--primary)/0.03) 25%, transparent 25%),
+      linear-gradient(240deg, rgba(var(--primary)/0.03) 25%, transparent 25%);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 0;
+  }
+
+  .dark .polygon-pattern {
+    background-image:
+      linear-gradient(120deg, rgba(var(--primary)/0.05) 25%, transparent 25%),
+      linear-gradient(240deg, rgba(var(--primary)/0.05) 25%, transparent 25%);
+  }
+
+  .link {
+    @apply text-primary hover:text-primary/80 transition-colors;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-xl hover:border-primary/20 transition-all duration-300
+    hover:transform hover:-translate-y-1
+    hover:bg-gradient-to-b hover:from-background hover:to-accent/5
+    dark:hover:from-background dark:hover:to-accent/10
+    dark:shadow-accent/5 dark:hover:shadow-accent/10;
+  }
+
+  .icon-button {
+    @apply rounded-full p-2.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors;
+  }
+
+  [dir="rtl"] * {
+    letter-spacing: 0 !important;
+  }
 }

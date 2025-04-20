@@ -1,0 +1,18 @@
+{
+  "navigation": {
+    "home": "Home",
+    "tools": "Tools",
+    "dashboard": "Dashboard",
+    "blog": "Blog"
+  },
+  "actions": {
+    "upload": "Upload File",
+    "download": "Download",
+    "delete": "Delete",
+    "share": "Share"
+  },
+  "meta": {
+    "title": "File Converter - Process Your Files Easily",
+    "description": "Professional tools for processing and converting PDF files, images, and documents"
+  }
+}
