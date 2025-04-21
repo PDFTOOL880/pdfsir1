@@ -5,7 +5,7 @@ Disallow: /dashboard
 Disallow: /api
 
 # Host
-Host: https://www.pdfsir.com
+Host: https://pdfsir.com
 
 # Sitemaps
-Sitemap: https://www.pdfsir.com/sitemap.xml
+Sitemap: https://pdfsir.com/sitemap.xml
