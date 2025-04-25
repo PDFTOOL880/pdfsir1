@@ -44,7 +44,7 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>
-            <GoogleAnalytics />
+            <GoogleAnalytics gaId={GOOGLE_SERVICES.analytics.measurementId} />
             <div className="relative">
               <Background />
               <div className="relative flex min-h-screen flex-col text-content">
