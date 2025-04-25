@@ -11,6 +11,7 @@ import { Footer } from "@/components/footer";
 import Background from "@/components/background";
 import { GoogleAnalytics } from "@/components/providers/google-analytics";
 import { GOOGLE_SERVICES } from "@/lib/google-services";
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,14 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4650660617864251"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={`${inter.variable} min-h-screen bg-background font-sans antialiased selection:bg-primary/10 selection:text-primary`}
       >
