@@ -3,6 +3,9 @@
 import Script from 'next/script';
 import { GOOGLE_SERVICES } from '@/lib/google-services';
 
+// Only log in development
+const debug = process.env.NODE_ENV === 'development';
+
 interface GoogleAnalyticsProps {
   gaId?: string;
 }
@@ -22,20 +25,28 @@ export function GoogleAnalytics({ gaId = GOOGLE_SERVICES.analytics.measurementId
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="afterInteractive"
         onError={(e) => {
-          console.error('Error loading Google Analytics:', e);
+          if (debug) {
+            console.error('Error loading Google Analytics:', e);
+          }
         }}
         onLoad={() => {
-          console.log('Google Analytics script loaded successfully');
+          if (debug) {
+            console.log('Google Analytics script loaded successfully');
+          }
         }}
       />
       <Script
         id="google-analytics"
         strategy="afterInteractive"
         onError={(e) => {
-          console.error('Error initializing Google Analytics:', e);
+          if (debug) {
+            console.error('Error initializing Google Analytics:', e);
+          }
         }}
         onLoad={() => {
-          console.log('Google Analytics initialized successfully');
+          if (debug) {
+            console.log('Google Analytics initialized successfully');
+          }
         }}
       >
         {`
