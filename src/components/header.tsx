@@ -3,12 +3,14 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, FileIcon, User } from "lucide-react"
+import { Menu, X, FileIcon, User, LayoutDashboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MegaMenu } from "@/components/ui/mega-menu"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { data: session } = useSession()
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -17,14 +19,19 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Sign In Button */}
+        {/* Auth Button */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/login">
-            <Button variant="outline" size="sm" className="gap-2">
+          {session ? (
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => signOut()}>
+              <User className="h-4 w-4" />
+              Sign Out
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => signIn("google")}>
               <User className="h-4 w-4" />
               Sign In
             </Button>
-          </Link>
+          )}
         </div>
 
         {/* Desktop Navigation */}
@@ -48,6 +55,15 @@ export function Header() {
           >
             Blog
           </Link>
+          {session && (
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary flex items-center gap-1"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+          )}
         </nav>
 
         {/* Logo and Project Name */}
@@ -76,14 +92,39 @@ export function Header() {
           {isMobileMenuOpen && (
             <div className="absolute top-16 left-0 right-0 bg-background border-b md:hidden">
               <nav className="container py-4 flex flex-col gap-4">
-                <Link
-                  href="/login"
-                  className="text-sm font-medium text-muted-foreground hover:text-primary flex items-center gap-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <User className="h-4 w-4" />
-                  Sign In
-                </Link>
+                {session ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        signOut()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="text-sm font-medium text-muted-foreground hover:text-primary flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                    <Link
+                      href="/dashboard"
+                      className="text-sm font-medium text-muted-foreground hover:text-primary flex items-center gap-2"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      signIn("google")
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="text-sm font-medium text-muted-foreground hover:text-primary flex items-center gap-2"
+                  >
+                    <User className="h-4 w-4" />
+                    Sign In
+                  </button>
+                )}
                 <Link
                   href="/tools"
                   className="text-sm font-medium text-muted-foreground hover:text-primary"
