@@ -22,6 +22,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "File Converter - Process Your Files Easily",
   description: "Professional tools for processing and converting PDF files, images, and documents",
+  icons: {
+    icon: '/favicon.png'
+  },
   verification: {
     google: GOOGLE_SERVICES.searchConsole.verificationToken,
   },
