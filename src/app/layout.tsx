@@ -11,6 +11,7 @@ import { Footer } from "@/components/footer";
 import Background from "@/components/background";
 import { GoogleAnalytics } from "@/components/providers/google-analytics";
 import { GOOGLE_SERVICES } from "@/lib/google-services";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import Script from 'next/script';
 
 const inter = Inter({
@@ -68,6 +69,7 @@ export default async function RootLayout({
               </div>
             </div>
             <Toaster richColors position="top-center" />
+            <ConsentBanner />
           </AuthProvider>
         </ThemeProvider>
       </body>
