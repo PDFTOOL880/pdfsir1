@@ -65,7 +65,9 @@ export function LocalGoogleAnalytics({ trackingId }: LocalGoogleAnalyticsProps) 
           // Update consent state
           gtag('consent', 'default', {
             'analytics_storage': '${consentState.analytics_storage || 'denied'}',
-            'ad_storage': '${consentState.ad_storage || 'denied'}'
+            'ad_storage': '${consentState.ad_storage || 'denied'}',
+            'ad_user_data': '${consentState.ad_user_data || 'denied'}',
+            'ad_personalization': '${consentState.ad_personalization || 'denied'}'
           });
 
           gtag('config', '${trackingId}', {

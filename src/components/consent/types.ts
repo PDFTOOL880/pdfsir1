@@ -3,6 +3,8 @@ export type ConsentStatus = 'granted' | 'denied' | undefined;
 export interface ConsentState {
   analytics_storage: ConsentStatus;
   ad_storage: ConsentStatus;
+  ad_user_data: ConsentStatus;
+  ad_personalization: ConsentStatus;
 }
 
 export interface ConsentBannerProps {

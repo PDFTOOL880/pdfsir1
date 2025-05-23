@@ -6,6 +6,8 @@ import { ConsentState, UseConsentReturn, CONSENT_STORAGE_KEY } from '../types';
 const defaultConsentState: ConsentState = {
   analytics_storage: undefined,
   ad_storage: undefined,
+  ad_user_data: undefined,
+  ad_personalization: undefined,
 };
 
 export function useConsent(): UseConsentReturn {
@@ -41,6 +43,8 @@ export function useConsent(): UseConsentReturn {
     updateConsent({
       analytics_storage: 'granted',
       ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
     });
   };
 
@@ -48,6 +52,8 @@ export function useConsent(): UseConsentReturn {
     updateConsent({
       analytics_storage: 'denied',
       ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
     });
   };
 
