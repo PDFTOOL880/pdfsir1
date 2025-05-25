@@ -117,11 +117,11 @@ export async function POST(request: NextRequest) {
 
       const mergeFormData = new FormData();
       
-      // Add each PDF URL as a separate Files parameter
-      for (let i = 0; i < pdfUrls.length; i++) {
-        mergeFormData.append("Files", pdfUrls[i]);
-        console.log(`Added file ${i + 1} to merge request:`, pdfUrls[i]);
-      }
+      // Add each PDF URL as an indexed Files parameter
+      pdfUrls.forEach((url, index) => {
+        mergeFormData.append(`Files[${index}]`, url);
+        console.log(`Added file ${index + 1} to merge request:`, url);
+      });
 
       console.log(`Sending merge request with ${pdfUrls.length} files...`);
       const mergeUrl = `https://v2.convertapi.com/convert/pdf/to/merge?${mergeParams}`;
