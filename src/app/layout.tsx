@@ -72,7 +72,7 @@ export default async function RootLayout({
             <ConsentBanner />
           </AuthProvider>
         </ThemeProvider>
-        <Script id="adsense-init" strategy="lazyOnload">
+        <Script id="adsbygoogle-init" strategy="afterInteractive">
           {`
             (adsbygoogle = window.adsbygoogle || []).push({
               google_ad_client: "ca-pub-650660617864251",
