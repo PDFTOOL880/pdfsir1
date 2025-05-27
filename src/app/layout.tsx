@@ -44,6 +44,14 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-650660617864251"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body
         className={`${inter.variable} min-h-screen bg-background font-sans antialiased selection:bg-primary/10 selection:text-primary`}
       >
@@ -64,21 +72,15 @@ export default async function RootLayout({
             <ConsentBanner />
           </AuthProvider>
         </ThemeProvider>
+        <Script id="adsense-init" strategy="lazyOnload">
+          {`
+            (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-650660617864251",
+              enable_page_level_ads: true
+            });
+          `}
+        </Script>
       </body>
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4650660617864251"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-      <Script id="adsense-init" strategy="afterInteractive">
-        {`
-          (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-4650660617864251",
-            enable_page_level_ads: true
-          });
-        `}
-      </Script>
     </html>
   );
 }
