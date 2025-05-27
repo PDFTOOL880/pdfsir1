@@ -51,6 +51,22 @@ export default async function RootLayout({
           crossOrigin="anonymous"
           strategy="beforeInteractive"
         />
+        <Script id="adsbygoogle-init" strategy="afterInteractive">
+          {`
+            window.addEventListener('load', function() {
+              if (window.adsbygoogle === undefined) {
+                window.adsbygoogle = [];
+              }
+              if (!window.adsbygooglPushed) {
+                window.adsbygoogle.push({
+                  google_ad_client: "ca-pub-650660617864251",
+                  enable_page_level_ads: true
+                });
+                window.adsbygooglPushed = true;
+              }
+            });
+          `}
+        </Script>
       </head>
       <body
         className={`${inter.variable} min-h-screen bg-background font-sans antialiased selection:bg-primary/10 selection:text-primary`}
@@ -72,14 +88,6 @@ export default async function RootLayout({
             <ConsentBanner />
           </AuthProvider>
         </ThemeProvider>
-        <Script id="adsbygoogle-init" strategy="afterInteractive">
-          {`
-            (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "ca-pub-650660617864251",
-              enable_page_level_ads: true
-            });
-          `}
-        </Script>
       </body>
     </html>
   );
