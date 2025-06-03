@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { convertPDFToWord } from '@/lib/convert-api'
 
-export const maxDuration = 300 // 5 minutes timeout
+export const maxDuration = 60 // Maximum allowed timeout for Vercel hobby plan
 
 function errorResponse(message: string, status: number = 400) {
   return NextResponse.json(
@@ -64,13 +64,13 @@ export async function POST(request: Request) {
       const extension = settings.format || 'docx'
       const newFilename = `${originalName}.${extension}`
 
-      // Return converted file
-      return new NextResponse(convertedBuffer, {
+      // Return conversion URL and filename
+      return NextResponse.json({
+        url: convertedBuffer.url,
+        filename: convertedBuffer.filename
+      }, {
         status: 200,
         headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(newFilename)}`,
-          'Content-Length': convertedBuffer.length.toString(),
           'Cache-Control': 'private, no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
           'Expires': '0'

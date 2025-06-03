@@ -33,7 +33,7 @@ export async function convertFile(
   fromFormat: string,
   toFormat: string,
   options: ConversionOptions = {}
-): Promise<Buffer> {
+): Promise<{ url: string, filename: string }> {
   try {
     // Prepare form data
     const formData = new FormData()
@@ -73,12 +73,15 @@ export async function convertFile(
     // Parse response
     const result = await response.json()
     
-    if (!result?.Files?.[0]?.Url) {
+    const fileResult = result?.Files?.[0]
+    if (!fileResult?.Url) {
       throw new Error('No converted file URL received')
     }
 
-    // Download converted file
-    return await downloadFile(result.Files[0].Url)
+    return {
+      url: fileResult.Url,
+      filename: fileResult.FileName || `converted.${toFormat}`
+    }
 
   } catch (error) {
     console.error('ConvertAPI Error:', error)
@@ -90,7 +93,7 @@ export async function convertFile(
   }
 }
 
-export async function convertPDFToWord(file: File | Buffer, options?: ConversionOptions): Promise<Buffer> {
+export async function convertPDFToWord(file: File | Buffer, options?: ConversionOptions): Promise<{ url: string, filename: string }> {
   return convertFile(file, 'pdf', 'docx', {
     ...options,
     preserveFormatting: true,
@@ -98,21 +101,21 @@ export async function convertPDFToWord(file: File | Buffer, options?: Conversion
   })
 }
 
-export async function convertWordToPDF(file: File | Buffer, options?: ConversionOptions): Promise<Buffer> {
+export async function convertWordToPDF(file: File | Buffer, options?: ConversionOptions): Promise<{ url: string, filename: string }> {
   return convertFile(file, 'docx', 'pdf', {
     ...options,
     quality: 'high'
   })
 }
 
-export async function convertExcelToPDF(file: File | Buffer, options?: ConversionOptions): Promise<Buffer> {
+export async function convertExcelToPDF(file: File | Buffer, options?: ConversionOptions): Promise<{ url: string, filename: string }> {
   return convertFile(file, 'xlsx', 'pdf', {
     ...options,
     quality: 'high'
   })
 }
 
-export async function convertWebPToJPG(file: File | Buffer, options?: ConversionOptions): Promise<Buffer> {
+export async function convertWebPToJPG(file: File | Buffer, options?: ConversionOptions): Promise<{ url: string, filename: string }> {
   return convertFile(file, 'webp', 'jpg', {
     ...options,
     quality: options?.quality || 'high'

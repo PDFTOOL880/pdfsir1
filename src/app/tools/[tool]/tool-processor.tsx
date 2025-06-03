@@ -84,23 +84,17 @@ export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps)
         throw new Error(errorData.error || errorData.details || "Failed to convert file")
       }
 
-      const blob = await response.blob()
+      // Get conversion result with URL and filename
+      const result = await response.json()
       
-      // Get filename with new extension
-      const originalName = files[0].name.replace(/\.[^/.]+$/, "")
-      const extension = settings.format || "docx"
-      const newFilename = `${originalName}.${extension}`
-
-      // Download the file
-      const url = window.URL.createObjectURL(blob)
+      // Download the file directly from ConvertAPI URL
       const a = document.createElement("a")
       a.style.display = "none"
-      a.href = url
-      a.download = newFilename
+      a.href = result.url
+      a.download = result.filename
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
 
     } catch (err) {
       console.error("Conversion error:", err)
