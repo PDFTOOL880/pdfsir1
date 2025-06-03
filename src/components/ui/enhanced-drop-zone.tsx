@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { FileUp, X } from "lucide-react"
-import { formatBytes } from "@/lib/utils"
+import { formatBytes, cn } from "@/lib/utils"
 
 interface EnhancedDropZoneProps {
   files: File[]
@@ -11,6 +11,7 @@ interface EnhancedDropZoneProps {
   accept?: Record<string, string[]>
   maxSize?: number
   maxFiles?: number
+  className?: string
 }
 
 export function EnhancedDropZone({
@@ -18,7 +19,8 @@ export function EnhancedDropZone({
   onFilesChange,
   accept,
   maxSize = 10 * 1024 * 1024, // 10MB default
-  maxFiles = 1
+  maxFiles = 1,
+  className
 }: EnhancedDropZoneProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -45,15 +47,15 @@ export function EnhancedDropZone({
     <div className="space-y-4">
       <div
         {...getRootProps()}
-        className={`
-          border-2 border-dashed rounded-lg p-8
-          flex flex-col items-center justify-center
-          cursor-pointer transition-colors
-          ${isDragActive 
-            ? "border-primary bg-primary/5" 
-            : "border-muted hover:border-primary/50 hover:bg-accent"
-          }
-        `}
+        className={cn(
+          "border-2 border-dashed rounded-lg p-8",
+          "flex flex-col items-center justify-center",
+          "cursor-pointer transition-colors",
+          isDragActive
+            ? "border-primary bg-primary/5"
+            : "border-muted hover:border-primary/50 hover:bg-accent",
+          className
+        )}
       >
         <input {...getInputProps()} />
         <FileUp className="h-8 w-8 mb-4 text-muted-foreground" />
