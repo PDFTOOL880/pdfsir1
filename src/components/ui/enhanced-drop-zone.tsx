@@ -5,14 +5,16 @@ import { useDropzone } from "react-dropzone"
 import { FileUp, X } from "lucide-react"
 import { formatBytes, cn } from "@/lib/utils"
 
-interface EnhancedDropZoneProps {
+interface EnhancedDropZoneProps extends React.HTMLAttributes<HTMLDivElement> {
   files: File[]
   onFilesChange: (files: File[]) => void
   accept?: Record<string, string[]>
   maxSize?: number
   maxFiles?: number
-  className?: string
 }
+
+// Add a helper type for strict typing of file types
+export type FileType = 'pdf' | 'docx' | 'doc' | 'xlsx' | 'jpg' | 'png' | 'webp'
 
 export function EnhancedDropZone({
   files,
