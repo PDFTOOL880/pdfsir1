@@ -19,7 +19,7 @@ const PDF_ACCEPT = ['.pdf']
 const WORD_ACCEPT = ['.doc', '.docx']
 
 export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps) {
-  const [files, setFiles] = useState<File[]>([])
+  const [file, setFile] = useState<File | null>(null)
   const [converting, setConverting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [settings, setSettings] = useState<ConversionSettings>({
@@ -28,9 +28,9 @@ export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps)
     preserveFormatting: true
   })
 
-  const handleFilesChange = (newFiles: FileList) => {
+  const handleFileChange = (newFile: File) => {
     setError(null)
-    setFiles(Array.from(newFiles))
+    setFile(newFile)
   }
 
   const handleSettingsChange = <T extends ConversionSettings[keyof ConversionSettings]>(
@@ -56,7 +56,7 @@ export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps)
   }
 
   const handleConvert = async () => {
-    if (files.length === 0) {
+    if (!file) {
       setError(`Please select a ${getFileType()} to convert`)
       return
     }
@@ -66,7 +66,7 @@ export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps)
 
     try {
       const formData = new FormData()
-      formData.append("file", files[0])
+      formData.append("file", file)
       formData.append("settings", JSON.stringify(settings))
 
       const response = await fetch("/api/pdf/convert", {
@@ -133,7 +133,7 @@ export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps)
     <div className="space-y-6">
       <ProcessingCard
         title={toolTitle}
-        onUpload={handleFilesChange}
+        onUpload={handleFileChange}
         onConvert={handleConvert}
         acceptedFormats={toolConfig.formats}
         fileTypeOptions={toolConfig.fileTypes}

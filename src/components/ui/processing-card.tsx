@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UploadBox } from "./upload-box";
+import { EnhancedUploadBox } from "./enhanced-upload-box";
 
 interface ProcessingCardProps {
   title: string;
-  onUpload: (files: FileList) => void;
+  onUpload: (file: File) => void;
   onConvert: () => void;
   acceptedFormats?: string[];
   fileTypeOptions?: string[];
@@ -35,13 +35,12 @@ export function ProcessingCard({
         {title}
       </h2>
 
-      {/* Upload Box */}
-      <UploadBox
+      {/* Enhanced Upload Box */}
+      <EnhancedUploadBox
         onUpload={onUpload}
         acceptedFormats={acceptedFormats}
         toolName={title}
         description={description}
-        multiple={false}
       />
 
       {/* File Type Options */}
