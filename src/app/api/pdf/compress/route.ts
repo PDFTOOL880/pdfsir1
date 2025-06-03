@@ -1,41 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir, readFile } from 'fs/promises';
-import { join } from 'path';
-import { unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-
-// Initialize ConvertAPI with secret from environment variables
-const convertApiSecret = process.env.CONVERT_API_SECRET;
-if (!convertApiSecret) {
-  throw new Error('CONVERT_API_SECRET is not set');
-}
-
-interface ConvertAPIResponse {
-  Files: Array<{
-    Url: string;
-    FileName: string;
-  }>;
-}
+import { getConvertApiSecret } from "@/lib/convert-api";
 
 export async function POST(request: NextRequest) {
-  let tempFilePath: string | null = null;
-  const tempDir = join(process.cwd(), 'temp');
-  
-  console.log('Starting PDF compression request...');
+  const convertApiSecret = getConvertApiSecret();
 
   try {
-    // Create temp directory if it doesn't exist
-    if (!existsSync(tempDir)) {
-      console.log('Creating temp directory...');
-      await mkdir(tempDir, { recursive: true });
+    if (!convertApiSecret) {
+      return NextResponse.json(
+        { 
+          error: "Service configuration error", 
+          details: "The conversion service is not properly configured" 
+        },
+        { status: 503 }
+      );
     }
 
+    // Get the file and settings from the request
     const formData = await request.formData();
     const file = formData.get("file") as File;
-    const compressionLevel = formData.get("compressionLevel") as string;
-
-    console.log('Received file:', file?.name);
-    console.log('Compression level:', compressionLevel);
+    const settingsStr = formData.get("settings") as string;
+    const settings = settingsStr ? JSON.parse(settingsStr) : {};
 
     if (!file) {
       return NextResponse.json(
@@ -44,96 +28,78 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!compressionLevel) {
-      return NextResponse.json(
-        { error: "No compression level specified" },
-        { status: 400 }
-      );
+    // Upload the file to ConvertAPI
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+
+    const uploadResponse = await fetch(
+      "https://v2.convertapi.com/upload",
+      {
+        method: "POST",
+        body: uploadFormData,
+      }
+    );
+
+    if (!uploadResponse.ok) {
+      throw new Error("Failed to upload file");
     }
 
-    // Convert compression level to ConvertAPI parameter
-    const quality = {
-      high: 100,
-      medium: 70,
-      low: 40
-    }[compressionLevel] || 70;
+    const uploadResult = await uploadResponse.json();
 
-    // Create a temporary file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    tempFilePath = join(tempDir, `${Date.now()}_${file.name}`);
+    // Set compression parameters based on settings
+    const compressionLevel = settings.quality === 'high' ? 'low' :
+                           settings.quality === 'medium' ? 'medium' : 'high';
+
+    // Prepare the API request parameters
+    const params = new URLSearchParams({
+      Secret: convertApiSecret,
+      File: uploadResult.FileId,
+      StoreFile: "true",
+      CompressLevel: compressionLevel
+    });
+
+    // Compress PDF using ConvertAPI
+    const apiUrl = `https://v2.convertapi.com/convert/pdf/to/compress?${params.toString()}`;
     
-    console.log('Writing temp file to:', tempFilePath);
-    await writeFile(tempFilePath, buffer);
-
-    // Prepare the API request
-    const apiUrl = `https://v2.convertapi.com/convert/pdf/to/compress?secret=${convertApiSecret}`;
-    
-    // Create form data for API request
-    const apiFormData = new FormData();
-    const fileBlob = new Blob([buffer], { type: 'application/pdf' });
-    apiFormData.append('File', fileBlob, file.name);
-    apiFormData.append('StoreFile', 'true');
-    apiFormData.append('Quality', quality.toString());
-
-    // Make the conversion request
-    console.log('Sending request to ConvertAPI...');
     const response = await fetch(apiUrl, {
-      method: 'POST',
-      body: apiFormData
+      method: "POST"
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('ConvertAPI error:', error);
-      throw new Error(error.Message || 'Conversion failed');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.Message || "Failed to compress file");
     }
 
-    // Parse the API response
-    const result = await response.json() as ConvertAPIResponse;
-    console.log('ConvertAPI response:', result);
-
+    const result = await response.json();
+    
     if (!result.Files?.[0]?.Url) {
-      throw new Error('No URL in conversion result');
+      throw new Error("No compressed file URL received");
     }
 
-    // Download the compressed file
-    console.log('Downloading compressed file...');
-    const compressedFileResponse = await fetch(result.Files[0].Url);
-    if (!compressedFileResponse.ok) {
-      throw new Error('Failed to download compressed file');
+    // Download the compressed PDF
+    const pdfResponse = await fetch(result.Files[0].Url);
+    if (!pdfResponse.ok) {
+      throw new Error("Failed to download compressed file");
     }
 
-    // Return the compressed file to the client
-    const blob = await compressedFileResponse.blob();
-    return new NextResponse(blob, {
+    const pdfBuffer = await pdfResponse.arrayBuffer();
+
+    // Return the compressed PDF
+    return new NextResponse(pdfBuffer, {
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="compressed_${file.name}"`
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="compressed_${file.name}"`
       }
     });
 
   } catch (error) {
-    console.error('PDF compression error:', error);
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
+    console.error("PDF compression error:", error);
     return NextResponse.json(
-      { error: "Failed to compress PDF" },
+      { 
+        error: "Compression failed",
+        details: error instanceof Error ? error.message : "Failed to compress file"
+      },
       { status: 500 }
     );
-  } finally {
-    // Clean up: delete the temporary file
-    if (tempFilePath) {
-      try {
-        console.log('Cleaning up temp file:', tempFilePath);
-        await unlink(tempFilePath);
-      } catch (error) {
-        console.error('Error deleting temporary file:', error);
-      }
-    }
   }
 }

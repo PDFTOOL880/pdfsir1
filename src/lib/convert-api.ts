@@ -1,9 +1,15 @@
-if (!process.env.CONVERTAPI_SECRET) {
-  throw new Error('CONVERTAPI_SECRET environment variable is not set')
-}
+// Safely check environment variable without throwing
+export const getConvertApiSecret = () => {
+  const secret = process.env.CONVERT_API_SECRET;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    console.error('CONVERT_API_SECRET environment variable is not configured');
+    return null;
+  }
+  return secret;
+};
 
 const API_BASE = 'https://v2.convertapi.com'
-const API_SECRET = process.env.CONVERTAPI_SECRET
+const API_SECRET = getConvertApiSecret()
 
 interface ConversionOptions {
   format?: string
@@ -12,6 +18,10 @@ interface ConversionOptions {
 }
 
 async function makeRequest(endpoint: string, data: FormData): Promise<Response> {
+  if (!API_SECRET) {
+    throw new Error('Conversion service is not properly configured')
+  }
+
   const url = `${API_BASE}${endpoint}?secret=${API_SECRET}`
   return fetch(url, {
     method: 'POST',
@@ -35,6 +45,11 @@ export async function convertFile(
   options: ConversionOptions = {}
 ): Promise<{ url: string, filename: string }> {
   try {
+    // Check API secret first
+    if (!API_SECRET) {
+      throw new Error('Conversion service is not properly configured')
+    }
+
     // Prepare form data
     const formData = new FormData()
 
@@ -121,3 +136,6 @@ export async function convertWebPToJPG(file: File | Buffer, options?: Conversion
     quality: options?.quality || 'high'
   })
 }
+
+// Export types for use in other files
+export type { ConversionOptions }

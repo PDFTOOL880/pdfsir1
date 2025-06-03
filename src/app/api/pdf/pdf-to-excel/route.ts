@@ -1,164 +1,106 @@
-import { NextRequest } from "next/server";
-import {
-  createErrorResponse,
-  createFileResponse,
-  parseSettings,
-  PdfToExcelSettingsSchema,
-  validateFile,
-  DEFAULT_FORMATS,
-  QUALITY_PARAMS,
-  MIME_TYPES,
-} from "@/lib/conversion-utils";
-
-interface ConvertApiResponse {
-  ConversionCost?: number;
-  Files?: Array<{
-    FileName: string;
-    FileSize: number;
-    FileId: string;
-    Url: string;
-  }>;
-  Error?: string;
-}
+import { NextRequest, NextResponse } from "next/server";
+import { getConvertApiSecret } from "@/lib/convert-api";
 
 export async function POST(request: NextRequest) {
-  if (!process.env.CONVERT_API_SECRET) {
-    return new Response(
-      JSON.stringify({
-        error: "Server configuration error",
-        details: "ConvertAPI secret is not set"
-      }),
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
-  }
+  const convertApiSecret = getConvertApiSecret();
 
   try {
-    const formData = await request.formData();
-    const file = validateFile(formData.get("file"), ["application/pdf"]);
-    const settings = parseSettings(formData.get("settings"), PdfToExcelSettingsSchema);
-
-    // Create FormData for ConvertAPI
-    const apiFormData = new FormData();
-    apiFormData.append("File", file);
-    apiFormData.append("StoreFile", "true");
-    
-    // Add conversion parameters based on settings
-    const qualityParams = QUALITY_PARAMS[settings.quality];
-    if (settings.extractAllTables) {
-      apiFormData.append("ExtractAllTables", "true");
+    if (!convertApiSecret) {
+      return NextResponse.json(
+        { 
+          error: "Service configuration error", 
+          details: "The conversion service is not properly configured" 
+        },
+        { status: 503 }
+      );
     }
-    apiFormData.append("OCR", "true"); // Enable OCR for better table detection
-    apiFormData.append("Timeout", "180"); // Set timeout to 3 minutes
 
-    const outputFormat = settings.format || DEFAULT_FORMATS.EXCEL;
+    // Get the file and settings from the request
+    const formData = await request.formData();
+    const file = formData.get("file") as File;
+    const settingsStr = formData.get("settings") as string;
+    const settings = settingsStr ? JSON.parse(settingsStr) : {};
 
-    // Call ConvertAPI
-    const response = await fetch(
-      `https://v2.convertapi.com/convert/pdf/to/${outputFormat}?Secret=${process.env.CONVERT_API_SECRET}`,
+    if (!file) {
+      return NextResponse.json(
+        { error: "No file provided" },
+        { status: 400 }
+      );
+    }
+
+    // Upload file to ConvertAPI
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+
+    const uploadResponse = await fetch(
+      "https://v2.convertapi.com/upload",
       {
         method: "POST",
-        body: apiFormData,
+        body: uploadFormData,
+      }
+    );
+
+    if (!uploadResponse.ok) {
+      throw new Error("Failed to upload file");
+    }
+
+    const uploadResult = await uploadResponse.json();
+
+    // Determine output format
+    const outputFormat = settings.format || 'xlsx';
+
+    // Configure conversion parameters
+    const params = new URLSearchParams({
+      Secret: convertApiSecret,
+      File: uploadResult.FileId,
+      StoreFile: "true",
+    });
+
+    // Add optional parameters
+    if (settings.quality) {
+      params.append("ImageQuality", 
+        settings.quality === "high" ? "100" :
+        settings.quality === "medium" ? "80" : "60"
+      );
+    }
+
+    if (settings.preserveFormatting) {
+      params.append("PreserveFormatting", "true");
+    }
+
+    // Convert PDF to Excel using ConvertAPI
+    const response = await fetch(
+      `https://v2.convertapi.com/convert/pdf/to/${outputFormat}?${params.toString()}`,
+      {
+        method: "POST"
       }
     );
 
     if (!response.ok) {
-      let errorMessage: string;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.Error || response.statusText;
-      } catch {
-        errorMessage = await response.text() || `Conversion failed with status ${response.status}`;
-      }
-      return new Response(
-        JSON.stringify({
-          error: "Conversion service error",
-          details: errorMessage
-        }),
-        { 
-          status: response.status,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.Message || "Failed to convert file");
     }
 
-    // Parse ConvertAPI response
-    const apiResponse: ConvertApiResponse = await response.json();
+    const result = await response.json();
     
-    if (apiResponse.Error) {
-      return new Response(
-        JSON.stringify({
-          error: "Conversion service error",
-          details: apiResponse.Error
-        }),
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+    if (!result.Files?.[0]?.Url) {
+      throw new Error("No converted file URL received");
     }
 
-    if (!apiResponse.Files?.[0]?.Url) {
-      return new Response(
-        JSON.stringify({
-          error: "Invalid conversion result",
-          details: "No output file in response"
-        }),
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
+    // Return the conversion result
+    return NextResponse.json({
+      url: result.Files[0].Url,
+      filename: result.Files[0].FileName || `converted.${outputFormat}`
+    });
 
-    // Download the converted file
-    const fileResponse = await fetch(apiResponse.Files[0].Url);
-    if (!fileResponse.ok) {
-      return new Response(
-        JSON.stringify({
-          error: "Download failed",
-          details: "Failed to download converted file"
-        }),
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    const result = await fileResponse.arrayBuffer();
-    if (!result || result.byteLength === 0) {
-      return new Response(
-        JSON.stringify({
-          error: "Empty file",
-          details: "Conversion produced an empty file"
-        }),
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-    
-    return createFileResponse(
-      result,
-      apiResponse.Files[0].FileName || file.name.replace(".pdf", `.${outputFormat}`),
-      outputFormat,
-      DEFAULT_FORMATS.EXCEL
-    );
   } catch (error) {
     console.error("PDF to Excel conversion error:", error);
-    return new Response(
-      JSON.stringify({
-        error: "Conversion failed",
-        details: error instanceof Error ? error.message : "Unknown error occurred"
-      }),
+    return NextResponse.json(
       { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        error: "Conversion failed",
+        details: error instanceof Error ? error.message : "Failed to convert file"
+      },
+      { status: 500 }
     );
   }
 }

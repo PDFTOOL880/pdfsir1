@@ -14,13 +14,29 @@ interface ConvertApiResponse {
   Files: ConvertApiFile[];
 }
 
-// Verify environment variable
-const API_SECRET = process.env.CONVERT_API_SECRET;
-if (!API_SECRET) {
-  throw new Error("CONVERT_API_SECRET environment variable is not configured");
-}
+// Safely check environment variable without throwing
+const getConvertApiSecret = () => {
+  const secret = process.env.CONVERT_API_SECRET;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    console.error('CONVERT_API_SECRET environment variable is not configured');
+    return null;
+  }
+  return secret;
+};
 
 export async function POST(request: NextRequest) {
+  const convertApiSecret = getConvertApiSecret();
+  
+  if (!convertApiSecret) {
+    return NextResponse.json(
+      { 
+        error: "Service configuration error", 
+        details: "The conversion service is not properly configured" 
+      },
+      { status: 503 }
+    );
+  }
+
   try {
     // Get the uploaded files from request
     const formData = await request.formData();
@@ -47,7 +63,7 @@ export async function POST(request: NextRequest) {
     convertApiFormData.append('PdfResolution', '150');
 
     // Convert PNGs to PDF using ConvertAPI's REST endpoint
-    const response = await fetch(`https://v2.convertapi.com/convert/png/to/pdf?Secret=${API_SECRET}`, {
+    const response = await fetch(`https://v2.convertapi.com/convert/png/to/pdf?Secret=${convertApiSecret}`, {
       method: 'POST',
       body: convertApiFormData
     });

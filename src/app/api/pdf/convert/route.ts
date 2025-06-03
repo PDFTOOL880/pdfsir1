@@ -1,105 +1,111 @@
-import { NextResponse } from 'next/server'
-import { convertPDFToWord } from '@/lib/convert-api'
+import { NextRequest, NextResponse } from "next/server";
 
-export const maxDuration = 60 // Maximum allowed timeout for Vercel hobby plan
+// Safely check environment variable without throwing
+const getConvertApiSecret = () => {
+  const secret = process.env.CONVERT_API_SECRET;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    console.error('CONVERT_API_SECRET environment variable is not configured');
+    return null;
+  }
+  return secret;
+};
 
-function errorResponse(message: string, status: number = 400) {
-  return NextResponse.json(
-    { 
-      error: message,
-      timestamp: new Date().toISOString()
-    },
-    { 
-      status,
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }
-  )
-}
+export async function POST(request: NextRequest) {
+  const convertApiSecret = getConvertApiSecret();
+  
+  if (!convertApiSecret) {
+    return NextResponse.json(
+      { 
+        error: "Service configuration error", 
+        details: "The conversion service is not properly configured" 
+      },
+      { status: 503 }
+    );
+  }
 
-export async function POST(request: Request) {
   try {
-    const formData = await request.formData()
-    const file = formData.get('file')
-    const settingsStr = formData.get('settings')
+    const formData = await request.formData();
+    const file = formData.get("file") as File;
+    const settingsStr = formData.get("settings") as string;
+    const settings = JSON.parse(settingsStr);
 
-    // Basic validation
-    if (!file || !(file instanceof File)) {
-      return errorResponse('No file provided or invalid file')
+    if (!file) {
+      return NextResponse.json(
+        { error: "No file provided" },
+        { status: 400 }
+      );
     }
 
-    if (!settingsStr) {
-      return errorResponse('No settings provided')
+    // Upload file to ConvertAPI
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+
+    const uploadResponse = await fetch(
+      "https://v2.convertapi.com/upload",
+      {
+        method: "POST",
+        body: uploadFormData,
+      }
+    );
+
+    if (!uploadResponse.ok) {
+      throw new Error("Failed to upload file");
     }
 
-    // Parse settings
-    let settings
-    try {
-      settings = JSON.parse(settingsStr as string)
-    } catch {
-      return errorResponse('Invalid settings format')
+    const uploadResult = await uploadResponse.json();
+
+    // Prepare conversion parameters
+    const params = new URLSearchParams({
+      Secret: convertApiSecret,
+      File: uploadResult.FileId,
+      StoreFile: "true",
+    });
+
+    // Add format-specific parameters
+    if (settings.format) {
+      params.append("Format", settings.format.toUpperCase());
     }
 
-    // File validation
-    if (!file.type.includes('pdf')) {
-      return errorResponse('Invalid file type. Please provide a PDF file.')
+    if (settings.quality) {
+      params.append("ImageQuality", 
+        settings.quality === "high" ? "100" :
+        settings.quality === "medium" ? "80" : "60"
+      );
     }
 
-    const MAX_SIZE = 10 * 1024 * 1024 // 10MB
-    if (file.size > MAX_SIZE) {
-      return errorResponse('File size exceeds 10MB limit.')
+    if (settings.preserveFormatting) {
+      params.append("PreserveFormatting", "true");
     }
 
-    try {
-      // Process the conversion
-      const convertedBuffer = await convertPDFToWord(file, {
-        format: settings.format || 'docx',
-        quality: settings.quality || 'high',
-        preserveFormatting: settings.preserveFormatting ?? true
-      })
+    // Convert PDF to Word using ConvertAPI
+    const response = await fetch(
+      `https://v2.convertapi.com/convert/pdf/to/docx?${params.toString()}`,
+      {
+        method: "POST",
+      }
+    );
 
-      // Prepare filename
-      const originalName = file.name.replace(/\.pdf$/i, '')
-      const extension = settings.format || 'docx'
-      const newFilename = `${originalName}.${extension}`
-
-      // Return conversion URL and filename
-      return NextResponse.json({
-        url: convertedBuffer.url,
-        filename: convertedBuffer.filename
-      }, {
-        status: 200,
-        headers: {
-          'Cache-Control': 'private, no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      })
-
-    } catch (conversionError) {
-      console.error('Conversion error:', conversionError)
-      return errorResponse(
-        conversionError instanceof Error 
-          ? conversionError.message 
-          : 'Failed to convert file',
-        500
-      )
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.Message || "Failed to convert file");
     }
+
+    const result = await response.json();
+    
+    // Return the download URL and filename
+    return NextResponse.json({
+      url: result.Files[0].Url,
+      filename: result.Files[0].FileName,
+    });
 
   } catch (error) {
-    console.error('API error:', error)
-    return errorResponse(
-      'An unexpected error occurred while processing your request',
-      500
-    )
+    console.error("PDF to Word conversion error:", error);
+    return NextResponse.json(
+      { 
+        error: "Conversion failed",
+        details: error instanceof Error ? error.message : "Failed to convert file"
+      },
+      { status: 500 }
+    );
   }
-}
-
-// Configure API route
-export const config = {
-  api: {
-    bodyParser: false,
-    responseLimit: '20mb',
-  },
 }
