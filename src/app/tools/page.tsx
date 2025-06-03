@@ -35,16 +35,16 @@ export default function ToolsPage() {
   const pdfTools = getToolsByCategory('pdf');
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="bg-gradient-to-b from-orange-50 to-white min-h-screen">
+      <div className="container mx-auto px-4 py-16">
       <div className="max-w-4xl mx-auto text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4">Our Tools</h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          A comprehensive suite of tools to handle all your document and image processing needs
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mt-6">
+          Convert, Edit & Manage PDFs – Instantly
+        </h1>
       </div>
 
       {/* Tools Sections */}
-      <div className="space-y-20">
+      <div className="space-y-10">
         {/* Document Tools Section */}
         <div>
           <div className="flex items-center gap-3 mb-8">
@@ -53,7 +53,7 @@ export default function ToolsPage() {
             </div>
             <h2 className="text-2xl font-semibold">{categoryConfig.documents.title}</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {documentTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -68,7 +68,7 @@ export default function ToolsPage() {
             </div>
             <h2 className="text-2xl font-semibold">{categoryConfig.images.title}</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {imageTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -83,10 +83,11 @@ export default function ToolsPage() {
             </div>
             <h2 className="text-2xl font-semibold">{categoryConfig.pdf.title}</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {pdfTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
+          </div>
           </div>
         </div>
       </div>

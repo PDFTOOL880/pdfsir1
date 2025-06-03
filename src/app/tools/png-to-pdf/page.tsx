@@ -86,7 +86,7 @@ export default function PNGToPDFPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Convert PNG to PDF</h1>
+        <h1 className="text-3xl font-bold mt-6 flex items-center justify-center gap-2">Convert PNG to PDF</h1>
         
         <EnhancedDropZone
           onFilesChange={handleFilesChange}

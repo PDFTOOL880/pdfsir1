@@ -105,8 +105,8 @@ export default function MergeImagesToPDFPage() {
       <Card className="max-w-2xl mx-auto p-6">
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold">Merge Images to PDF</h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h1 className="text-3xl font-bold mt-6 flex items-center justify-center gap-2">Merge Images to PDF</h1>
+            <p className="text-sm text-muted-foreground mt-5">
               Upload multiple images (JPG, PNG, WEBP) and combine them into a single PDF file.
             </p>
           </div>

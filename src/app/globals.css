@@ -1,157 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+ 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+ 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+ 
+    --primary: 24 96% 53%;
     --primary-foreground: 210 40% 98%;
+ 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
+ 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+ 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
+ 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 24 96% 53%;
+ 
     --radius: 0.5rem;
   }
-
+ 
   .dark {
-    --background: 220 20% 4%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 220 20% 6%;
+ 
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-    --popover: 220 20% 4%;
+ 
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 220 20% 12%;
+ 
+    --primary: 24 96% 53%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 220 20% 12%;
-    --muted-foreground: 215 20.2% 85%;
-    --accent: 220 20% 12%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+ 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 220 20% 12%;
-    --input: 220 20% 12%;
-    --ring: 224.3 76.3% 48%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 24 96% 53%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;
   }
-}
-
-@layer components {
   body {
-    @apply bg-background text-foreground antialiased min-h-screen;
-  }
-
-  h1 {
-    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl dark:text-white;
-  }
-
-  h2 {
-    @apply scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0 dark:text-gray-100;
-  }
-
-  h3 {
-    @apply scroll-m-20 text-2xl font-semibold tracking-tight dark:text-gray-100;
-  }
-
-  h4 {
-    @apply scroll-m-20 text-xl font-semibold tracking-tight dark:text-gray-100;
-  }
-
-  p {
-    @apply leading-7 [&:not(:first-child)]:mt-6 dark:text-gray-200;
-  }
-
-  .page-header {
-    @apply flex flex-col gap-4;
-  }
-
-  .page-title {
-    @apply text-3xl font-bold tracking-tight dark:text-white;
-  }
-
-  .page-description {
-    @apply text-lg text-muted-foreground;
-  }
-
-  .card-grid {
-    @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
-  }
-  /* Background Element Styles */
-  
-  /* Custom Text Colors */
-  .text-content {
-    @apply text-[#1F2937] dark:text-[#E5E7EB]; /* Improved contrast in dark mode */
-  }
-  
-  .text-helper {
-    @apply text-[#6B7280] dark:text-[#9CA3AF]; /* Enhanced visibility in dark mode */
-  }
-  
-  /* Custom Button Colors */
-  .btn-primary {
-    @apply bg-[#2563EB] text-white hover:bg-[#2563EB]/90;
-  }
-  
-  /* Element Shadow */
-  .floating-element {
-    @apply shadow-[0_8px_16px_rgba(0,0,0,0.1)];
+    @apply bg-background text-foreground;
   }
 }
 
-@layer utilities {
-  /* Polygon Pattern Background */
-  .polygon-pattern {
-    @apply relative;
-    background-color: rgba(var(--background));
-    background-image:
-      linear-gradient(120deg, rgba(var(--primary)/0.03) 25%, transparent 25%),
-      linear-gradient(240deg, rgba(var(--primary)/0.03) 25%, transparent 25%);
-    background-size: 60px 60px;
-    background-position: 0 0, 30px 0;
-  }
+/* Custom scrollbar styles */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) transparent;
+}
 
-  .dark .polygon-pattern {
-    background-image:
-      linear-gradient(120deg, rgba(var(--primary)/0.05) 25%, transparent 25%),
-      linear-gradient(240deg, rgba(var(--primary)/0.05) 25%, transparent 25%);
-  }
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .link {
-    @apply text-primary hover:text-primary/80 transition-colors;
-  }
-  
-  .card-hover {
-    @apply hover:shadow-xl hover:border-primary/20 transition-all duration-300
-    hover:transform hover:-translate-y-1
-    hover:bg-gradient-to-b hover:from-background hover:to-accent/5
-    dark:hover:from-background dark:hover:to-accent/10
-    dark:shadow-accent/5 dark:hover:shadow-accent/10;
-  }
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .icon-button {
-    @apply rounded-full p-2.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors;
-  }
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary));
+  border-radius: 3px;
+}
 
-  [dir="rtl"] * {
-    letter-spacing: 0 !important;
-  }
+/* File upload drag & drop styles */
+.dropzone {
+  border: 2px dashed hsl(var(--border));
+  transition: all 0.2s ease-in-out;
+}
+
+.dropzone:hover,
+.dropzone.dragging {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary) / 0.05);
 }

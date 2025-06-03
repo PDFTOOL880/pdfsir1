@@ -12,7 +12,7 @@ import Background from "@/components/background";
 import { GoogleAnalytics } from "@/components/providers/google-analytics";
 import { GOOGLE_SERVICES } from "@/lib/google-services";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
-import Script from 'next/script';
+import { AdsenseProvider } from "@/components/providers/adsense-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,30 +44,6 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
-      <head>
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-650660617864251"
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
-        <Script id="adsbygoogle-init" strategy="afterInteractive">
-          {`
-            window.addEventListener('load', function() {
-              if (window.adsbygoogle === undefined) {
-                window.adsbygoogle = [];
-              }
-              if (!window.adsbygooglPushed) {
-                window.adsbygoogle.push({
-                  google_ad_client: "ca-pub-650660617864251",
-                  enable_page_level_ads: true
-                });
-                window.adsbygooglPushed = true;
-              }
-            });
-          `}
-        </Script>
-      </head>
       <body
         className={`${inter.variable} min-h-screen bg-background font-sans antialiased selection:bg-primary/10 selection:text-primary`}
       >
@@ -86,6 +62,7 @@ export default async function RootLayout({
             </div>
             <Toaster richColors position="top-center" />
             <ConsentBanner />
+            <AdsenseProvider />
           </AuthProvider>
         </ThemeProvider>
       </body>

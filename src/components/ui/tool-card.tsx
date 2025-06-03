@@ -1,118 +1,55 @@
+"use client";
+
 import { Tool } from "@/lib/tools";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { IconName, ToolIcon } from "./tool-icon";
+import { ToolIcon } from "./tool-icon";
 
-// Brand colors for different file types
-const brandColors = {
-  'word': {
-    bg: 'from-blue-500/10 to-blue-600/20',
-    glow: 'shadow-blue-500/20',
-    icon: 'text-blue-500',
-    hover: 'hover:border-blue-500/50'
-  },
-  'excel': {
-    bg: 'from-green-500/10 to-green-600/20',
-    glow: 'shadow-green-500/20',
-    icon: 'text-green-500',
-    hover: 'hover:border-green-500/50'
-  },
-  'pdf': {
-    bg: 'from-red-500/10 to-red-600/20',
-    glow: 'shadow-red-500/20',
-    icon: 'text-red-500',
-    hover: 'hover:border-red-500/50'
-  },
-  'image': {
-    bg: 'from-purple-500/10 to-purple-600/20',
-    glow: 'shadow-purple-500/20',
-    icon: 'text-purple-500',
-    hover: 'hover:border-purple-500/50'
-  }
-};
-
-interface ToolCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  tool?: Tool;
-  // Allow individual props as an alternative to passing the full tool object
-  title?: string;
-  description?: string;
-  iconName?: IconName;
-  href?: string;
+interface ToolCardProps {
+  tool: Tool;
+  className?: string;
 }
 
-export function ToolCard({ 
-  tool,
-  title: titleProp,
-  description: descriptionProp,
-  iconName: iconNameProp,
-  href: hrefProp,
-  className, 
-  ...props 
-}: ToolCardProps) {
-  // Use either individual props or tool object properties
-  const title = titleProp || tool?.title;
-  const description = descriptionProp || tool?.description;
-  const iconName = iconNameProp || tool?.iconName;
-  const href = hrefProp || tool?.href;
-  const id = tool?.id || title?.toLowerCase().replace(/\s+/g, '-');
-
-  // Determine the brand color theme based on tool type
-  const getTheme = () => {
-    if (id?.includes('word')) return brandColors.word;
-    if (id?.includes('excel')) return brandColors.excel;
-    if (id?.includes('jpg') || id?.includes('png')) return brandColors.image;
-    return brandColors.pdf;
-  };
-
-  const theme = getTheme();
-
-  if (!title || !description || !iconName || !href) {
-    return null;
+const getToolColors = (tool: Tool) => {
+  const id = tool.id.toLowerCase();
+  
+  if (id.includes('word')) return { bg: 'bg-blue-50', text: 'text-blue-600' };
+  if (id.includes('excel')) return { bg: 'bg-green-50', text: 'text-green-600' };
+  if (id.includes('pptx')) return { bg: 'bg-orange-50', text: 'text-orange-600' };
+  if (id.includes('jpg') || id.includes('png') || id.includes('webp')) {
+    return { bg: 'bg-purple-50', text: 'text-purple-600' };
   }
+  if (id.includes('sign') || id.includes('fill')) {
+    return { bg: 'bg-gray-50', text: 'text-gray-600' };
+  }
+  // Default red for general PDF tools
+  return { bg: 'bg-red-50', text: 'text-red-600' };
+};
 
+export function ToolCard({ tool, className }: ToolCardProps) {
   return (
-    <Link href={href}>
-      <div
-        className={cn(
-          // Base card styles
-          "relative group rounded-2xl p-6",
-          "bg-gradient-to-br",
-          theme.bg,
-          "border border-white/5",
-          theme.hover,
-          // 3D effect and hover animation
-          "transform transition-all duration-300",
-          "hover:-translate-y-1 hover:shadow-xl",
-          className
-        )}
-        {...props}
-      >
-        {/* Icon container with glow effect */}
-        <div className={cn(
-          "mb-6 w-14 h-14",
-          "rounded-xl flex items-center justify-center",
-          "bg-gradient-to-br from-white/5 to-white/10",
-          "shadow-lg", theme.glow,
-          "transform transition-transform duration-300",
-          "group-hover:scale-110"
-        )}>
-          <ToolIcon name={iconName} className={cn("w-6 h-6", theme.icon)} />
-        </div>
+    <Link
+      href={tool.href}
+      className={cn(
+        "rounded-2xl p-6 cursor-pointer",
+        "shadow-sm transition-all duration-200 ease-in-out",
+        "hover:shadow-lg hover:scale-[1.02] hover:-translate-y-0.5",
+        "flex flex-col items-center justify-center text-center gap-3",
+        `${getToolColors(tool).bg} bg-gradient-to-br from-white/80`,
+        className
+      )}
+    >
+      {/* Icon */}
+      <div className={cn(
+        "text-4xl",
+        getToolColors(tool).text
+      )}>
+        <ToolIcon name={tool.iconName} />
+      </div>
 
-        {/* Content */}
-        <h3 className="text-xl font-semibold mb-2 text-white">
-          {title}
-        </h3>
-        <p className="text-sm text-gray-400 mb-4">
-          {description}
-        </p>
-
-        {/* Try Now button */}
-        <div className="flex items-center text-sm font-medium text-white/80">
-          Try Now
-          <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-        </div>
+      {/* Title */}
+      <div className="text-sm font-medium">
+        {tool.title}
       </div>
     </Link>
   );

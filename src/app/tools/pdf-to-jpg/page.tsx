@@ -84,38 +84,40 @@ export default function PDFToJPGPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Convert PDF to JPG</h1>
-        
-        <EnhancedDropZone
-          onFilesChange={handleFilesChange}
-          accept={{
-            "application/pdf": [".pdf"],
-          }}
-          maxSize={10 * 1024 * 1024}
-          files={files}
-          maxFiles={1}
-        />
+    <div className="flex justify-center items-start min-h-screen py-12 px-4">
+      <div className="w-full max-w-2xl">
+        <Card className="p-6">
+          <h1 className="text-3xl font-bold mt-6 flex items-center justify-center gap-2">Convert PDF to JPG</h1>
+          
+          <EnhancedDropZone
+            onFilesChange={handleFilesChange}
+            accept={{
+              "application/pdf": [".pdf"],
+            }}
+            maxSize={10 * 1024 * 1024}
+            files={files}
+            maxFiles={1}
+          />
 
-        {error && (
-          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-md">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-md">
+              {error}
+            </div>
+          )}
 
-        {files.length > 0 && (
-          <div className="mt-6">
-            <Button
-              onClick={handleConversion}
-              disabled={isConverting}
-              className="w-full"
-            >
-              {isConverting ? "Converting..." : "Convert to JPG"}
-            </Button>
-          </div>
-        )}
-      </Card>
+          {files.length > 0 && (
+            <div className="mt-6">
+              <Button
+                onClick={handleConversion}
+                disabled={isConverting}
+                className="w-full"
+              >
+                {isConverting ? "Converting..." : "Convert to JPG"}
+              </Button>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }

@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function MergePdfPage() {
   return (
-    <div className="container max-w-4xl py-6 space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">Merge PDF Files</h1>
+    <div className="container max-w-4xl py-6 space-y-4">
+      <div className="space-y-4 text-center">
+        <h1 className="text-3xl font-bold mt-10">Merge PDF Files</h1>
         <p className="text-muted-foreground">
           Combine multiple PDF files into a single document. Maximum 20MB per file.
         </p>

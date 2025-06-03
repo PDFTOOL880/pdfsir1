@@ -1,260 +1,167 @@
 "use client";
 
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { EnhancedDropZone } from "@/components/ui/enhanced-drop-zone";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, FileOutput, Loader2, Settings2 } from "lucide-react";
+import { useState } from "react"
+import { AlertCircle, Loader2 } from "lucide-react"
+import { ProcessingCard } from "../../../components/ui/processing-card"
 
 interface ToolProcessorProps {
-  toolId: string;
-  toolTitle: string;
+  toolId: string
+  toolTitle: string
 }
 
 interface ConversionSettings {
-  format?: "docx" | "doc";
-  quality: "high" | "medium" | "low";
-  preserveFormatting?: boolean;
+  format?: "docx" | "doc"
+  quality: "high" | "medium" | "low"
+  preserveFormatting?: boolean
 }
 
-type AcceptType = Record<string, string[]>;
-
-const PDF_ACCEPT: AcceptType = {
-  "application/pdf": [".pdf"]
-};
-
-const WORD_ACCEPT: AcceptType = {
-  "application/msword": [".doc"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"]
-};
-
-const EXCEL_ACCEPT: AcceptType = {
-  "application/vnd.ms-excel": [".xls"],
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
-};
-
-const WEBP_ACCEPT: AcceptType = {
-  "image/webp": [".webp"]
-};
+const PDF_ACCEPT = ['.pdf']
+const WORD_ACCEPT = ['.doc', '.docx']
 
 export default function ToolProcessor({ toolId, toolTitle }: ToolProcessorProps) {
-  const [files, setFiles] = useState<File[]>([]);
-  const [converting, setConverting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [settings] = useState<ConversionSettings>({
+  const [files, setFiles] = useState<File[]>([])
+  const [converting, setConverting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [settings, setSettings] = useState<ConversionSettings>({
+    format: "docx",
     quality: "high",
     preserveFormatting: true
-  });
+  })
 
-  const handleFilesChange = (newFiles: File[]) => {
-    setError(null);
-    setFiles(newFiles);
-  };
+  const handleFilesChange = (newFiles: FileList) => {
+    setError(null)
+    setFiles(Array.from(newFiles))
+  }
 
-  const downloadBlob = (blob: Blob, fileName: string) => {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = fileName;
-    
-    document.body.appendChild(a);
-    a.click();
-    
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 100);
-  };
+  const handleSettingsChange = <T extends ConversionSettings[keyof ConversionSettings]>(
+    key: keyof ConversionSettings,
+    value: T
+  ) => {
+    setSettings(prev => ({ ...prev, [key]: value }))
+  }
 
   const getFileType = () => {
     switch (toolId) {
+      case "pdf-to-word":
+        return "PDF file"
       case "word-to-pdf":
-        return "Word document";
+        return "Word document"
       case "excel-to-pdf":
-        return "Excel file";
-      default:
-        return "PDF file";
-    }
-  };
-
-  const getApiEndpoint = () => {
-    switch (toolId) {
-      case "word-to-pdf":
-        return "/api/pdf/word-to-pdf";
-      case "excel-to-pdf":
-        return "/api/pdf/excel-to-pdf";
+        return "Excel file"
       case "webp-to-jpg":
-        return "/api/image/webp-to-jpg";
+        return "WebP image"
       default:
-        return "/api/pdf/convert";
+        return "file"
     }
-  };
+  }
 
   const handleConvert = async () => {
     if (files.length === 0) {
-      setError(`Please select a ${getFileType()} to convert`);
-      return;
+      setError(`Please select a ${getFileType()} to convert`)
+      return
     }
 
-    setConverting(true);
-    setError(null);
+    setConverting(true)
+    setError(null)
 
     try {
-      const formData = new FormData();
-      formData.append("file", files[0]);
-      formData.append("settings", JSON.stringify(settings));
+      const formData = new FormData()
+      formData.append("file", files[0])
+      formData.append("settings", JSON.stringify(settings))
 
-      const response = await fetch(getApiEndpoint(), {
+      const response = await fetch("/api/pdf/convert", {
         method: "POST",
-        body: formData,
-      });
+        body: formData
+      })
 
-      const contentType = response.headers.get("content-type");
-      console.log("Response content type:", contentType);
-
-      // Handle error responses
       if (!response.ok) {
-        let errorMessage = "Conversion failed";
-        
+        let errorData
         try {
-          if (contentType?.includes("application/json")) {
-            const errorData = await response.json();
-            errorMessage = errorData.details || errorData.error || errorMessage;
-          } else {
-            const errorText = await response.text();
-            errorMessage = errorText || errorMessage;
-          }
-        } catch (e) {
-          console.error("Error parsing error response:", e);
+          errorData = await response.json()
+        } catch {
+          throw new Error("Failed to convert file")
         }
-        
-        throw new Error(errorMessage);
+        throw new Error(errorData.error || errorData.details || "Failed to convert file")
       }
 
-      // Handle JSON responses (usually errors)
-      if (contentType?.includes("application/json")) {
-        const data = await response.json();
-        throw new Error(data.error || "Unexpected response format");
-      }
+      const blob = await response.blob()
+      
+      // Get filename with new extension
+      const originalName = files[0].name.replace(/\.[^/.]+$/, "")
+      const extension = settings.format || "docx"
+      const newFilename = `${originalName}.${extension}`
 
-      // Get original filename and new extension
-      const originalName = files[0].name;
-      const newExtension = toolId === "webp-to-jpg" ? ".jpg" :
-                         toolId.endsWith("-to-pdf") ? ".pdf" :
-                         `.${settings.format || 'docx'}`;
-      const newFileName = originalName.replace(/\.[^/.]+$/, newExtension);
-
-      // Download the converted file
-      const blob = await response.blob();
-      downloadBlob(blob, newFileName);
+      // Download the file
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.style.display = "none"
+      a.href = url
+      a.download = newFilename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
 
     } catch (err) {
-      console.error("Conversion error:", err);
-      setError(
-        err instanceof Error 
-          ? err.message 
-          : "Failed to convert the file. Please try again."
-      );
+      console.error("Conversion error:", err)
+      setError(err instanceof Error ? err.message : "Failed to convert file")
     } finally {
-      setConverting(false);
+      setConverting(false)
     }
-  };
-
-  if (!["pdf-to-word", "word-to-pdf", "excel-to-pdf", "webp-to-jpg"].includes(toolId)) {
-    return (
-      <Card className="p-6 text-center">
-        <p className="text-muted-foreground">
-          Tool "{toolId}" not found or is currently under development.
-        </p>
-      </Card>
-    );
   }
 
-  const getToolDescription = () => {
+  const getToolConfig = () => {
     switch (toolId) {
       case "pdf-to-word":
-        return "Transform your PDF documents into editable Word files while preserving formatting";
+        return {
+          formats: PDF_ACCEPT,
+          description: "Upload your PDF file to convert to Word format",
+          fileTypes: ["docx", "doc"]
+        }
       case "word-to-pdf":
-        return "Convert Word documents to PDF format with high-quality results";
-      case "excel-to-pdf":
-        return "Transform Excel spreadsheets into professional PDF documents";
-      case "webp-to-jpg":
-        return "Convert WEBP images to JPG format while maintaining image quality";
+        return {
+          formats: WORD_ACCEPT,
+          description: "Upload your Word document to convert to PDF",
+          fileTypes: ["pdf"]
+        }
       default:
-        return "";
+        return {
+          formats: [],
+          description: "Upload your file to convert",
+          fileTypes: []
+        }
     }
-  };
+  }
 
-  const getAcceptedTypes = () => {
-    switch (toolId) {
-      case "pdf-to-word":
-        return PDF_ACCEPT;
-      case "word-to-pdf":
-        return WORD_ACCEPT;
-      case "excel-to-pdf":
-        return EXCEL_ACCEPT;
-      case "webp-to-jpg":
-        return WEBP_ACCEPT;
-      default:
-        return {};
-    }
-  };
+  const toolConfig = getToolConfig()
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">{toolTitle}</h2>
-          <p className="text-muted-foreground">
-            {getToolDescription()}
-          </p>
+      <ProcessingCard
+        title={toolTitle}
+        onUpload={handleFilesChange}
+        onConvert={handleConvert}
+        acceptedFormats={toolConfig.formats}
+        fileTypeOptions={toolConfig.fileTypes}
+        description={toolConfig.description}
+        selectedFileType={settings.format}
+        onFileTypeChange={(type: string) => handleSettingsChange("format", type as ConversionSettings["format"])}
+        className="mx-auto"
+      />
+
+      {error && (
+        <div className="flex items-start gap-2 text-destructive mt-4 bg-destructive/10 p-3 rounded-md max-w-md mx-auto">
+          <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <p className="text-sm">{error}</p>
         </div>
+      )}
 
-        <EnhancedDropZone
-          files={files}
-          onFilesChange={handleFilesChange}
-          accept={getAcceptedTypes()}
-          maxSize={10 * 1024 * 1024} // 10MB
-          maxFiles={1}
-        />
-
-        {error && (
-          <div className="flex items-start gap-2 text-destructive mt-4 bg-destructive/10 p-3 rounded-md">
-            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <p className="text-sm whitespace-pre-wrap break-words">{error}</p>
-          </div>
-        )}
-
-        <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Settings2 className="h-4 w-4" />
-            <span className="text-sm">
-              Quality: {settings.quality}
-              {toolId === "pdf-to-word" && settings.format && ` | Format: ${settings.format.toUpperCase()}`}
-            </span>
-          </div>
-
-          <Button
-            onClick={handleConvert}
-            disabled={files.length === 0 || converting}
-            className="w-full sm:w-auto"
-          >
-            {converting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Converting...
-              </>
-            ) : (
-              <>
-                <FileOutput className="mr-2 h-4 w-4" />
-                Convert to {toolId === "webp-to-jpg" ? "JPG" :
-                          toolId.endsWith("-to-pdf") ? "PDF" : "Word"}
-              </>
-            )}
-          </Button>
+      {converting && (
+        <div className="flex items-center justify-center gap-2 text-[#FF6A00]">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Converting...</span>
         </div>
-      </Card>
+      )}
     </div>
-  );
+  )
 }

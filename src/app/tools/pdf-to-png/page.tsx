@@ -78,7 +78,7 @@ export default function PDFtoPNG() {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Convert PDF to PNG</h1>
+      <h1 className="text-3xl font-bold mt-10 flex items-center justify-center gap-2">Convert PDF to PNG</h1>
       <div className="space-y-6">
         <div className="rounded-lg border p-6 bg-card">
           <h2 className="text-xl font-semibold mb-4">Upload your PDF file</h2>

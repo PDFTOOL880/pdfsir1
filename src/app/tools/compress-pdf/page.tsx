@@ -8,14 +8,16 @@ export const metadata: Metadata = {
 
 export default function CompressPDFPage() {
   return (
-    <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Compress PDF</h1>
-        <p className="text-muted-foreground">
-          Reduce your PDF file size while maintaining quality. Choose from different compression levels to find the perfect balance between file size and quality.
-        </p>
+    <div className="flex justify-center items-start min-h-screen py-12 px-4">
+      <div className="w-full max-w-2xl">
+        <div className="space-y-4 text-center">
+          <h1 className="text-4xl font-bold mt-6">Compress PDF</h1>
+          <p className="text-muted-foreground">
+            Reduce your PDF file size while maintaining quality. Choose from different compression levels to find the perfect balance between file size and quality.
+          </p>
+        </div>
+        <CompressPDFTool />
       </div>
-      <CompressPDFTool />
     </div>
   );
 }

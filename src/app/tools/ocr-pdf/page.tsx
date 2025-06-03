@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 export default function OcrPDFPage() {
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">PDF OCR</h1>
+      <div className="space-y-4 text-center">
+        <h1 className="text-4xl font-bold mt-8">PDF OCR</h1>
         <p className="text-muted-foreground">
           Extract text from PDF documents using advanced OCR technology. Our tool supports both Arabic and English text recognition, making it perfect for multilingual documents.
         </p>

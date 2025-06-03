@@ -52,22 +52,40 @@ export function DropZone({
     <div
       {...getRootProps()}
       className={cn(
-        "flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors",
-        isDragActive && "border-primary bg-primary/5",
-        error && "border-destructive",
+        "flex h-32 w-full cursor-pointer rounded-lg",
+        "border-2 border-dashed border-orange-200",
+        "bg-orange-50 shadow-sm hover:shadow-md",
+        "transition-all duration-300",
+        isDragActive && "border-orange-300 bg-orange-100",
+        error && "border-destructive bg-red-50",
         className
       )}
     >
-      <div className="flex flex-col items-center gap-2">
-        <Upload className={cn("h-8 w-8", error ? "text-destructive" : "text-muted-foreground")} />
+      <div className="flex flex-col items-center justify-center h-full gap-3">
+        <Upload
+          className={cn(
+            "w-10 h-10 transition-transform",
+            error ? "text-destructive" : "text-orange-400 hover:scale-105",
+          )}
+        />
         <div className="flex flex-col items-center gap-1">
-          <p className="text-sm">{error || "Drag & drop or click to upload"}</p>
-          <p className="text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span className="font-bold">Click to upload</span>
+            <span className="text-gray-600">or drag and drop</span>
+          </div>
+          <p className="text-sm text-gray-400">
             Maximum file size: {maxSize / 1024 / 1024}MB
           </p>
         </div>
         <input {...getInputProps()} />
-        <Button variant={error ? "destructive" : "default"} size="sm">
+        <Button
+          variant={error ? "destructive" : "outline"}
+          size="sm"
+          className={cn(
+            "mt-2",
+            !error && "text-orange-600 hover:text-orange-700 border-orange-200 hover:bg-orange-50"
+          )}
+        >
           Select File
         </Button>
       </div>

@@ -15,7 +15,7 @@ const documentTools: Tool[] = [
     id: "pdf-to-word",
     title: "PDF to Word",
     description: "Convert PDF files to editable Word documents",
-    iconName: "file-text",
+    iconName: "pdf-to-word",
     href: "/tools/pdf-to-word",
     category: 'documents'
   },
@@ -23,7 +23,7 @@ const documentTools: Tool[] = [
     id: "word-to-pdf",
     title: "Word to PDF",
     description: "Convert Word documents to PDF format",
-    iconName: "file",
+    iconName: "word-to-pdf",
     href: "/tools/word-to-pdf",
     category: 'documents'
   },
@@ -31,7 +31,7 @@ const documentTools: Tool[] = [
     id: "pdf-to-excel",
     title: "PDF to Excel",
     description: "Convert PDF tables to Excel spreadsheets",
-    iconName: "file-text",
+    iconName: "pdf-to-excel",
     href: "/tools/pdf-to-excel",
     category: 'documents'
   },
@@ -39,7 +39,7 @@ const documentTools: Tool[] = [
     id: "excel-to-pdf",
     title: "Excel to PDF",
     description: "Convert Excel spreadsheets to PDF format",
-    iconName: "file",
+    iconName: "excel-to-pdf",
     href: "/tools/excel-to-pdf",
     category: 'documents'
   },
@@ -47,7 +47,7 @@ const documentTools: Tool[] = [
     id: "pdf-to-pptx",
     title: "PDF to PPTX",
     description: "Convert PDF to PowerPoint presentations",
-    iconName: "file-text",
+    iconName: "pdf-to-pptx",
     href: "/tools/pdf-to-pptx",
     category: 'documents'
   },
@@ -55,7 +55,7 @@ const documentTools: Tool[] = [
     id: "pptx-to-pdf",
     title: "PPTX to PDF",
     description: "Convert PowerPoint presentations to PDF",
-    iconName: "file",
+    iconName: "pptx-to-pdf",
     href: "/tools/pptx-to-pdf",
     category: 'documents'
   }
@@ -67,7 +67,7 @@ const imageTools: Tool[] = [
     id: "pdf-to-jpg",
     title: "PDF to JPG",
     description: "Convert PDF pages to JPG images",
-    iconName: "download",
+    iconName: "pdf-to-jpg",
     href: "/tools/pdf-to-jpg",
     category: 'images'
   },
@@ -75,7 +75,7 @@ const imageTools: Tool[] = [
     id: "jpg-to-pdf",
     title: "JPG to PDF",
     description: "Convert JPG images to PDF format",
-    iconName: "upload",
+    iconName: "jpg-to-pdf",
     href: "/tools/jpg-to-pdf",
     category: 'images'
   },
@@ -83,7 +83,7 @@ const imageTools: Tool[] = [
     id: "png-to-pdf",
     title: "PNG to PDF",
     description: "Convert PNG images to PDF format",
-    iconName: "upload",
+    iconName: "png-to-pdf",
     href: "/tools/png-to-pdf",
     category: 'images'
   },
@@ -91,7 +91,7 @@ const imageTools: Tool[] = [
     id: "pdf-to-png",
     title: "PDF to PNG",
     description: "Convert PDF pages to PNG images",
-    iconName: "download",
+    iconName: "pdf-to-png",
     href: "/tools/pdf-to-png",
     category: 'images'
   },
@@ -99,7 +99,7 @@ const imageTools: Tool[] = [
     id: "webp-to-jpg",
     title: "WEBP to JPG",
     description: "Convert WEBP images to JPG format",
-    iconName: "download",
+    iconName: "webp-to-jpg",
     href: "/tools/webp-to-jpg",
     category: 'images'
   },
@@ -107,7 +107,7 @@ const imageTools: Tool[] = [
     id: "merge-images-to-pdf",
     title: "Merge Images to PDF",
     description: "Combine multiple images into one PDF",
-    iconName: "plus",
+    iconName: "merge-images-to-pdf",
     href: "/tools/merge-images-to-pdf",
     category: 'images'
   }
@@ -119,7 +119,7 @@ const pdfTools: Tool[] = [
     id: "merge-pdf",
     title: "Merge PDF",
     description: "Combine multiple PDF files into one",
-    iconName: "plus",
+    iconName: "merge-pdf",
     href: "/tools/merge-pdf",
     category: 'pdf'
   },
@@ -127,7 +127,7 @@ const pdfTools: Tool[] = [
     id: "split-pdf",
     title: "Split PDF",
     description: "Split PDF into multiple documents",
-    iconName: "edit",
+    iconName: "split-pdf",
     href: "/tools/split-pdf",
     category: 'pdf'
   },
@@ -135,7 +135,7 @@ const pdfTools: Tool[] = [
     id: "compress-pdf",
     title: "Compress PDF",
     description: "Reduce PDF file size while maintaining quality",
-    iconName: "file",
+    iconName: "compress-pdf",
     href: "/tools/compress-pdf",
     category: 'pdf'
   },
@@ -143,7 +143,7 @@ const pdfTools: Tool[] = [
     id: "ocr-pdf",
     title: "OCR PDF",
     description: "Make scanned PDFs searchable with OCR",
-    iconName: "search",
+    iconName: "ocr-pdf",
     href: "/tools/ocr-pdf",
     category: 'pdf'
   },
@@ -151,7 +151,7 @@ const pdfTools: Tool[] = [
     id: "fill-pdf",
     title: "Fill PDF",
     description: "Fill and sign PDF forms easily",
-    iconName: "edit",
+    iconName: "fill-pdf",
     href: "/tools/fill-pdf",
     category: 'pdf'
   },
@@ -159,7 +159,7 @@ const pdfTools: Tool[] = [
     id: "sign-pdf",
     title: "Sign PDF",
     description: "Add digital signatures to PDF documents",
-    iconName: "edit",
+    iconName: "sign-pdf",
     href: "/tools/sign-pdf",
     category: 'pdf'
   },
@@ -167,7 +167,7 @@ const pdfTools: Tool[] = [
     id: "translate-pdf",
     title: "Translate PDF",
     description: "Translate PDF documents to other languages",
-    iconName: "file-text",
+    iconName: "translate-pdf",
     href: "/tools/translate-pdf",
     category: 'pdf'
   }
