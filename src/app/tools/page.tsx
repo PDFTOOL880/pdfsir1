@@ -35,23 +35,23 @@ export default function ToolsPage() {
   const pdfTools = getToolsByCategory('pdf');
 
   return (
-    <div className="bg-gradient-to-b from-orange-50 to-white min-h-screen">
-      <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto text-center mb-16">
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mt-6">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white dark:from-orange-900 dark:via-orange-800 dark:to-orange-700">
+      <div className="container mx-auto px-4 py-16 space-y-12">
+      <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
           Convert, Edit & Manage PDFs – Instantly
         </h1>
       </div>
 
       {/* Tools Sections */}
-      <div className="space-y-10">
+      <div className="space-y-16">
         {/* Document Tools Section */}
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className={`p-2 rounded-lg bg-gradient-to-br ${categoryConfig.documents.color}`}>
+            <div className={`p-3 rounded-lg bg-gradient-to-br ${categoryConfig.documents.color} dark:from-orange-600/20 dark:to-orange-700/30`}>
               <FileText className={`w-6 h-6 ${categoryConfig.documents.iconColor}`} />
             </div>
-            <h2 className="text-2xl font-semibold">{categoryConfig.documents.title}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{categoryConfig.documents.title}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {documentTools.map((tool) => (
@@ -63,10 +63,10 @@ export default function ToolsPage() {
         {/* Image Tools Section */}
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className={`p-2 rounded-lg bg-gradient-to-br ${categoryConfig.images.color}`}>
+            <div className={`p-3 rounded-lg bg-gradient-to-br ${categoryConfig.images.color} dark:from-orange-600/20 dark:to-orange-700/30`}>
               <ImageIcon className={`w-6 h-6 ${categoryConfig.images.iconColor}`} />
             </div>
-            <h2 className="text-2xl font-semibold">{categoryConfig.images.title}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{categoryConfig.images.title}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {imageTools.map((tool) => (
@@ -78,10 +78,10 @@ export default function ToolsPage() {
         {/* PDF Tools Section */}
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className={`p-2 rounded-lg bg-gradient-to-br ${categoryConfig.pdf.color}`}>
+            <div className={`p-3 rounded-lg bg-gradient-to-br ${categoryConfig.pdf.color} dark:from-orange-600/20 dark:to-orange-700/30`}>
               <FileUp className={`w-6 h-6 ${categoryConfig.pdf.iconColor}`} />
             </div>
-            <h2 className="text-2xl font-semibold">{categoryConfig.pdf.title}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{categoryConfig.pdf.title}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {pdfTools.map((tool) => (
@@ -94,13 +94,13 @@ export default function ToolsPage() {
 
       {/* Custom Tool Section */}
       <div className="mt-20 max-w-3xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-4">?Need a Custom Tool</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Need a Custom Tool?</h2>
+        <p className="text-gray-600 dark:text-orange-100 mb-8">
           .Don't see the tool you need? Contact us to discuss custom solutions for your specific requirements
         </p>
         <a
           href="mailto:pdftool37@gmail.com"
-          className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+          className="inline-block bg-orange-600 dark:bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors shadow-lg hover:shadow-orange-500/25"
         >
           Contact us
         </a>
