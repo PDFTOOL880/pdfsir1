@@ -4,88 +4,85 @@ import { Tool } from "@/lib/tools";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ToolIcon } from "./tool-icon";
+import { motion } from "framer-motion";
 
 interface ToolCardProps {
   tool: Tool;
   className?: string;
 }
 
-const getToolColors = (tool: Tool) => {
-  // In dark mode, use orange theme for all tools
-  if (typeof window !== 'undefined' && document.documentElement.classList.contains('dark')) {
-    return {
-      bg: 'bg-gradient-to-br from-orange-600 to-orange-700',
-      text: 'text-white',
-      glow: 'group-hover:shadow-orange-500/50'
-    };
+const cardVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  hover: {
+    scale: 1.05,
+    transition: { duration: 0.2 }
   }
+};
 
-  // Light mode - keep existing color scheme
-  const id = tool.id.toLowerCase();
-  
-  if (id.includes('word')) return {
-    bg: 'bg-blue-50',
-    text: 'text-blue-600',
-    glow: 'group-hover:shadow-blue-500/25'
-  };
-  if (id.includes('excel')) return {
-    bg: 'bg-green-50',
-    text: 'text-green-600',
-    glow: 'group-hover:shadow-green-500/25'
-  };
-  if (id.includes('pptx')) return {
-    bg: 'bg-orange-50',
-    text: 'text-orange-600',
-    glow: 'group-hover:shadow-orange-500/25'
-  };
-  if (id.includes('jpg') || id.includes('png') || id.includes('webp')) {
-    return {
-      bg: 'bg-purple-50',
-      text: 'text-purple-600',
-      glow: 'group-hover:shadow-purple-500/25'
-    };
-  }
-  if (id.includes('sign') || id.includes('fill')) {
-    return {
-      bg: 'bg-gray-50',
-      text: 'text-gray-600',
-      glow: 'group-hover:shadow-gray-500/25'
-    };
-  }
+const getCardStyles = (tool: Tool) => {
   return {
-    bg: 'bg-red-50',
-    text: 'text-red-600',
-    glow: 'group-hover:shadow-red-500/25'
+    light: {
+      bg: tool.id.includes('word') ? 'bg-blue-50' :
+          tool.id.includes('excel') ? 'bg-green-50' :
+          tool.id.includes('pptx') ? 'bg-orange-50' :
+          tool.id.includes('jpg') || tool.id.includes('png') ? 'bg-purple-50' :
+          tool.id.includes('sign') || tool.id.includes('fill') ? 'bg-gray-50' :
+          'bg-red-50',
+      text: tool.id.includes('word') ? 'text-blue-600' :
+            tool.id.includes('excel') ? 'text-green-600' :
+            tool.id.includes('pptx') ? 'text-orange-600' :
+            tool.id.includes('jpg') || tool.id.includes('png') ? 'text-purple-600' :
+            tool.id.includes('sign') || tool.id.includes('fill') ? 'text-gray-600' :
+            'text-red-600',
+      shadow: 'shadow-lg'
+    },
+    dark: {
+      bg: 'bg-gradient-to-br from-orange-500 to-orange-600',
+      text: 'text-white',
+      shadow: 'shadow-xl shadow-orange-800/40'
+    }
   };
 };
 
 export function ToolCard({ tool, className }: ToolCardProps) {
+  const styles = getCardStyles(tool);
+  
   return (
-    <Link
-      href={tool.href}
-      className={cn(
-        "group rounded-2xl p-6 cursor-pointer",
-        "shadow-sm transition-all duration-300 ease-in-out",
-        "hover:shadow-2xl hover:scale-105",
-        "flex flex-col items-center justify-center text-center gap-3",
-        getToolColors(tool).bg,
-        "backdrop-blur-sm",
-        getToolColors(tool).glow,
-        className
-      )}
+    <motion.div
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+      variants={cardVariants}
+      transition={{ duration: 0.3 }}
     >
-      {/* Icon */}
-      <div className={cn(
-        "text-4xl",
-        getToolColors(tool).text
-      )}>
-        <ToolIcon name={tool.iconName} />
-      </div>
+      <Link
+        href={tool.href}
+        className={cn(
+          "group w-64 h-36 rounded-2xl cursor-pointer",
+          "transition-all duration-300 ease-in-out",
+          "flex flex-col items-center justify-center text-center gap-4",
+          "backdrop-blur-sm",
+          styles.light.bg,
+          styles.light.shadow,
+          "dark:bg-gradient-to-br dark:from-orange-500 dark:to-orange-600",
+          "dark:shadow-xl dark:shadow-orange-800/40",
+          "hover:shadow-2xl dark:hover:shadow-orange-800/60",
+          className
+        )}
+      >
+        <div className={cn(
+          "text-4xl mb-2",
+          styles.light.text,
+          "dark:text-white"
+        )}>
+          <ToolIcon name={tool.iconName} />
+        </div>
 
-      {/* Title */}
-      <div className="text-sm font-semibold text-gray-800 dark:text-orange-100">
-        {tool.title}
-      </div>
-    </Link>
+        <div className="text-lg font-semibold text-gray-800 dark:text-white">
+          {tool.title}
+        </div>
+      </Link>
+    </motion.div>
   );
 }
