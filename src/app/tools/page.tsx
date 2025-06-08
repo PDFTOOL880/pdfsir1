@@ -53,7 +53,7 @@ export default function ToolsPage() {
               <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.documents.title}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
             {documentTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -68,7 +68,7 @@ export default function ToolsPage() {
               <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.images.title}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
             {imageTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -83,7 +83,7 @@ export default function ToolsPage() {
               <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.pdf.title}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
             {pdfTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}

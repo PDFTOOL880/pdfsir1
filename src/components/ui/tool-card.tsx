@@ -65,9 +65,10 @@ export function ToolCard({ tool, className }: ToolCardProps) {
           "backdrop-blur-sm",
           styles.light.bg,
           styles.light.shadow,
-          "dark:bg-gradient-to-br dark:from-orange-500 dark:to-orange-600",
+          "dark:bg-gradient-to-br dark:from-orange-500 dark:to-orange-600 dark:brightness-110 dark:saturate-150",
           "dark:shadow-xl dark:shadow-orange-800/40",
           "hover:shadow-2xl dark:hover:shadow-orange-800/60",
+          "transition-all duration-300",
           className
         )}
       >
