@@ -10,18 +10,18 @@ export default function PDFToWord() {
   return (
     <div className="container mx-auto px-4 pt-24">
       <div className="w-full max-w-2xl mx-auto space-y-8">
-        <div className="text-center">
+        <div className="text-center text-orange-500">
           <h1 className="text-3xl font-bold mb-1">
             Convert PDF to Word
           </h1>
           <p className="text-muted-foreground">
-            Transform your PDF documents into editable Word files while preserving all formatting and layout.
+            .Transform your PDF documents into editable Word files while preserving all formatting
           </p>
         </div>
 
         <ToolProcessor 
           toolId="pdf-to-word"
-          toolTitle="PDF to Word Converter"
+          toolTitle=" PDF to Word Converter"
         />
 
         <div className="space-y-6 text-sm text-muted-foreground">

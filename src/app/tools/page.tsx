@@ -37,8 +37,8 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white dark:bg-black transition-colors duration-500">
       <div className="container mx-auto px-4 py-16 space-y-16">
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white/90">
+      <div className="max-w-4xl mx-auto text-center mt-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-black/90">
           Convert, Edit & Manage PDFs – Instantly
         </h1>
       </div>
@@ -49,8 +49,8 @@ export default function ToolsPage() {
         <div>
           <div className="flex items-center gap-3 mb-8">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/20 dark:from-orange-500/20 dark:to-orange-600/30">
-              <FileText className="w-6 h-6 text-blue-500 dark:text-white/80" />
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.documents.title}</h2>
+              <FileText className="w-6 h-6 text-blue-500 dark:text-red/80" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-black/80">{categoryConfig.documents.title}</h2>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
@@ -64,8 +64,8 @@ export default function ToolsPage() {
         <div>
           <div className="flex items-center gap-3 mb-8">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/20 dark:from-orange-500/20 dark:to-orange-600/30">
-              <ImageIcon className="w-6 h-6 text-purple-500 dark:text-white/80" />
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.images.title}</h2>
+              <ImageIcon className="w-6 h-6 text-purple-500 dark:text-red/80" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-black/80">{categoryConfig.images.title}</h2>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
@@ -79,8 +79,8 @@ export default function ToolsPage() {
         <div>
           <div className="flex items-center gap-3 mb-8">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-gradient-to-br from-red-500/10 to-red-600/20 dark:from-orange-500/20 dark:to-orange-600/30">
-              <FileUp className="w-6 h-6 text-red-500 dark:text-white/80" />
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white/80">{categoryConfig.pdf.title}</h2>
+              <FileUp className="w-6 h-6 text-red-500 dark:text-red/80" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-black/80">{categoryConfig.pdf.title}</h2>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 dark:gap-4 transition-all duration-300">
@@ -94,8 +94,8 @@ export default function ToolsPage() {
 
       {/* Custom Tool Section */}
       <div className="mt-20 max-w-3xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white/90">Need a Custom Tool?</h2>
-        <p className="text-gray-600 dark:text-white/70 mb-8">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-black/90">?Need a Custom Tool</h2>
+        <p className="text-gray-600 dark:text-black/70 mb-8">
           .Don't see the tool you need? Contact us to discuss custom solutions for your specific requirements
         </p>
         <a

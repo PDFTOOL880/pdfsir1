@@ -23,27 +23,33 @@ const cardVariants = {
 const getCardStyles = (tool: Tool) => {
   return {
     light: {
-      bg: tool.id.includes('word') ? 'bg-blue-50' :
-          tool.id.includes('excel') ? 'bg-green-50' :
-          tool.id.includes('pptx') ? 'bg-orange-50' :
-          tool.id.includes('jpg') || tool.id.includes('png') ? 'bg-purple-50' :
-          tool.id.includes('sign') || tool.id.includes('fill') ? 'bg-gray-50' :
-          'bg-red-50',
-      text: tool.id.includes('word') ? 'text-blue-600' :
-            tool.id.includes('excel') ? 'text-green-600' :
-            tool.id.includes('pptx') ? 'text-orange-600' :
-            tool.id.includes('jpg') || tool.id.includes('png') ? 'text-purple-600' :
-            tool.id.includes('sign') || tool.id.includes('fill') ? 'text-gray-600' :
-            'text-red-600',
+      bg: tool.id.includes('word') ? 'bg-blue-100' :
+          tool.id.includes('excel') ? 'bg-green-100' :
+          tool.id.includes('pptx') ? 'bg-orange-100' :
+          tool.id.includes('jpg') || tool.id.includes('png') || tool.id.includes('image') ? 'bg-purple-100' :
+          tool.id.includes('sign') || tool.id.includes('fill') ? 'bg-green-100' :
+          'bg-green-100',
+      text: tool.id.includes('word') ? 'text-blue-700' :
+            tool.id.includes('excel') ? 'text-green-700' :
+            tool.id.includes('pptx') ? 'text-orange-700' :
+            tool.id.includes('jpg') || tool.id.includes('png') || tool.id.includes('image') ? 'text-purple-700' :
+            tool.id.includes('sign') || tool.id.includes('fill') ? 'text-red-700' :
+            'text-red-700',
       shadow: 'shadow-lg'
     },
     dark: {
-      bg: 'bg-gradient-to-br from-orange-500 to-orange-600',
+      bg: tool.id.includes('word') ? 'bg-gradient-to-br from-blue-600 to-blue-800' :
+          tool.id.includes('excel') ? 'bg-gradient-to-br from-green-600 to-green-800' :
+          tool.id.includes('pptx') ? 'bg-gradient-to-br from-orange-600 to-orange-800' :
+          tool.id.includes('jpg') || tool.id.includes('png') || tool.id.includes('image') ? 'bg-gradient-to-br from-purple-600 to-purple-800' :
+          tool.id.includes('sign') || tool.id.includes('fill') ? 'bg-gradient-to-br from-gray-600 to-gray-800' :
+          'bg-gradient-to-br from-red-600 to-red-800',
       text: 'text-white',
-      shadow: 'shadow-xl shadow-orange-800/40'
+      shadow: 'shadow-xl shadow-black/40'
     }
   };
 };
+
 
 export function ToolCard({ tool, className }: ToolCardProps) {
   const styles = getCardStyles(tool);
