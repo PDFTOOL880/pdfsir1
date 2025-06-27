@@ -1,20 +1,3 @@
-import {
-  FileText,
-  File,
-  FileType,
-  FileImage,
-  Table2,
-  Presentation,
-  ImageIcon,
-  Files,
-  Scissors,
-  Minimize2,
-  ScanLine,
-  PenSquare,
-  Languages,
-  type LucideIcon
-} from "lucide-react";
-
 export type IconName =
   // Document Tools
   | "pdf-to-word"
@@ -39,39 +22,20 @@ export type IconName =
   | "sign-pdf"
   | "translate-pdf";
 
-const iconMap: Record<IconName, LucideIcon> = {
-  // Document conversion tools
-  "pdf-to-word": FileText,
-  "word-to-pdf": File,
-  "pdf-to-excel": Table2,
-  "excel-to-pdf": File,
-  "pdf-to-pptx": Presentation,
-  "pptx-to-pdf": File,
-
-  // Image tools
-  "pdf-to-jpg": FileImage,
-  "jpg-to-pdf": FileType,
-  "png-to-pdf": FileType,
-  "pdf-to-png": FileImage,
-  "webp-to-jpg": ImageIcon,
-  "merge-images-to-pdf": Files,
-
-  // PDF editing tools
-  "merge-pdf": Files,
-  "split-pdf": Scissors,
-  "compress-pdf": Minimize2,
-  "ocr-pdf": ScanLine,
-  "fill-pdf": FileText,
-  "sign-pdf": PenSquare,
-  "translate-pdf": Languages
-};
-
 interface ToolIconProps {
   name: IconName;
   className?: string;
 }
 
-export function ToolIcon({ name, className }: ToolIconProps) {
-  const Icon = iconMap[name];
-  return Icon ? <Icon className={className} /> : null;
+export function ToolIcon({ name, className = "w-24 h-24 mx-auto" }: ToolIconProps) {
+  return (
+    <img
+      src={`/icons/${name}.svg`}
+      alt={name}
+      className={className}
+      onError={(e) => {
+        e.currentTarget.src = '/icons/default.svg';
+      }}
+    />
+  );
 }
