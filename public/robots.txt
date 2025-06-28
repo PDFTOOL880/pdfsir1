@@ -1,11 +1,6 @@
-# *
 User-agent: *
 Allow: /
 Disallow: /dashboard
 Disallow: /api
 
-# Host
-Host: https://www.pdfsir.com
-
-# Sitemaps
 Sitemap: https://www.pdfsir.com/sitemap.xml
